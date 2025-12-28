@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Feedback Escolar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script>(function(){
+    emailjs.init("1ke6-B-hhkZTw8O_q");
+})();
+</script>
+    <style>
+        .star {
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .star:hover {
+            transform: scale(1.2);
+        }
+        .active-nav {
+            background-color: #2563eb;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navegação -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <svg class="w-8 h-8 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                    <span class="text-xl font-bold text-gray-800">FeedbackEscola</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="showView('home')" id="nav-home" class="px-4 py-2 rounded-lg transition-colors active-nav">
+                        Início
+                    </button>
+                    <button onclick="showView('feedback')" id="nav-feedback" class="px-4 py-2 rounded-lg transition-colors text-gray-600 hover:bg-gray-100">
+                        Enviar Feedback
+                    </button>
+                    <button onclick="showView('dashboard')" id="nav-dashboard" class="px-4 py-2 rounded-lg transition-colors text-gray-600 hover:bg-gray-100">
+                        📊 Painel Admin
+                    </button>
+                </div>
+            </div>  
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- VIEW: HOME -->
+        <div id="view-home" class="space-y-6">
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-lg shadow-lg">
+                <h1 class="text-3xl font-bold mb-4">Sistema de Feedback Escolar</h1>
+                <p class="text-lg opacity-90">
+                    Sua opinião é fundamental para construirmos juntos uma escola melhor. 
+                    Participe de forma anônima e segura!
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+                    <p class="text-gray-500 text-sm">Total de Feedbacks</p>
+                    <p class="text-3xl font-bold text-gray-800">0</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+                    <p class="text-gray-500 text-sm">Satisfação Média</p>
+                    <p class="text-3xl font-bold text-gray-800">0.0/5</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
+                    <p class="text-gray-500 text-sm">Participantes</p>
+                    <p class="text-3xl font-bold text-gray-800">0</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500">
+                    <p class="text-gray-500 text-sm">Taxa de Resposta</p>
+                    <p class="text-3xl font-bold text-gray-800">0%</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-2">🛡️</span>
+                        <h3 class="text-lg font-semibold">100% Anônimo</h3>
+                    </div>
+                    <p class="text-gray-600">
+                        Suas respostas são completamente confidenciais. Nenhuma identificação é coletada.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-2">💬</span>
+                        <h3 class="text-lg font-semibold">Diálogo Aberto</h3>
+                    </div>
+                    <p class="text-gray-600">
+                        Canal permanente de comunicação entre toda a comunidade escolar.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-2">📈</span>
+                        <h3 class="text-lg font-semibold">Melhorias Contínuas</h3>
+                    </div>
+                    <p class="text-gray-600">
+                        Decisões baseadas em dados reais da comunidade escolar.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: FEEDBACK -->
+        <div id="view-feedback" class="hidden max-w-2xl mx-auto">
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <div class="flex items-center mb-6">
+                    <span class="text-3xl mr-3">📨</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Enviar Feedback Anônimo</h2>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                    <p class="text-sm text-blue-800">
+                        <strong>🛡️ Garantia de Anonimato:</strong> Este formulário não coleta nenhuma informação pessoal. 
+                        Sinta-se livre para expressar sua opinião sincera.
+                    </p>
+                    <p class="text-xs text-blue-700 mt-2">
+                        📧 Feedbacks são encaminhados para: <strong>matheus.alvestove@gmail.com</strong>
+                    </p>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Categoria *
+                        </label>
+                        <select id="categoria" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Selecione uma categoria</option>
+                            <option value="Ensino">Ensino e Metodologia</option>
+                            <option value="Infraestrutura">Infraestrutura</option>
+                            <option value="Comunicação">Comunicação</option>
+                            <option value="Gestão">Gestão Escolar</option>
+                            <option value="Segurança">Segurança</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">
+        Nome da Escola *
+    </label>
+    <input
+        type="text"
+        id="escola"
+        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        placeholder="Digite o nome da escola">
+</div>
+
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Nível de Satisfação * (<span id="rating-display">0</span>/5)
+                        </label>
+                        <div id="star-rating" class="flex items-center space-x-2">
+                            <span class="star text-gray-300" data-rating="1">★</span>
+                            <span class="star text-gray-300" data-rating="2">★</span>
+                            <span class="star text-gray-300" data-rating="3">★</span>
+                            <span class="star text-gray-300" data-rating="4">★</span>
+                            <span class="star text-gray-300" data-rating="5">★</span>
+                        </div>
+                        <input type="hidden" id="satisfacao" value="0">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Comentário (opcional)
+                        </label>
+                        <textarea id="comentario" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="4" placeholder="Compartilhe sua experiência, sugestões ou preocupações..."></textarea>
+                    </div>
+
+                    <button onclick="enviarFeedback()" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                        📨 Enviar Feedback Anônimo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: DASHBOARD -->
+        <div id="view-dashboard" class="hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-gray-800">Painel Administrativo</h2>
+                <button onclick="exportarRelatorio()" class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                    📥 Exportar Relatório
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Satisfação por Categoria</h3>
+                    <canvas id="chartCategoria"></canvas>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Distribuição de Notas</h3>
+                    <canvas id="chartNotas"></canvas>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md lg:col-span-2">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Evolução Mensal</h3>
+                    <canvas id="chartEvolucao"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800">Feedbacks Recentes</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Data</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Categoria</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Satisfação</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Comentário</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feedbackTable" class="divide-y divide-gray-200">
+                            <!-- Dados serão inseridos via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-center text-gray-600 text-sm">
+                Sistema de Feedback Escolar - Promovendo transparência e colaboração na educação
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Dados de feedback (simulados - em produção viriam de um banco de dados)
+        let feedbacks = [];
+        function calcularMediaPorCategoria(categoria) {
+    const filtrados = feedbacks.filter(f => f.categoria === categoria);
+    if (filtrados.length === 0) return 0;
+    return (
+        filtrados.reduce((s, f) => s + f.satisfacao, 0) / filtrados.length
+    ).toFixed(1);
+}
+
+
+        // Navegação entre views
+        function showView(viewName) {
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-feedback').classList.add('hidden');
+            document.getElementById('view-dashboard').classList.add('hidden');
+            
+            document.getElementById('nav-home').classList.remove('active-nav');
+            document.getElementById('nav-feedback').classList.remove('active-nav');
+            document.getElementById('nav-dashboard').classList.remove('active-nav');
+            
+            document.getElementById('view-' + viewName).classList.remove('hidden');
+            document.getElementById('nav-' + viewName).classList.add('active-nav');
+            
+            if (viewName === 'dashboard') {
+                setTimeout(() => {
+    inicializarGraficos();
+}, 100);
+
+                carregarTabelaFeedbacks();
+            }
+        }
+
+        // Sistema de avaliação por estrelas
+       document.addEventListener('DOMContentLoaded', () => {
+    const stars = document.querySelectorAll('#star-rating .star');
+    const ratingDisplay = document.getElementById('rating-display');
+    const satisfacaoInput = document.getElementById('satisfacao');
+
+    stars.forEach((star, index) => {
+        star.addEventListener('click', () => {
+            const rating = index + 1;
+
+            satisfacaoInput.value = rating;
+            ratingDisplay.textContent = rating;
+
+            stars.forEach((s, i) => {
+                if (i < rating) {
+                    s.classList.remove('text-gray-300');
+                    s.classList.add('text-yellow-400');
+                } else {
+                    s.classList.add('text-gray-300');
+                    s.classList.remove('text-yellow-400');
+                }
+            });
+        });
+    });
+
+    atualizarCardsHome();
+});
+function atualizarCardsHome() {
+    const total = feedbacks.length;
+    const participantes = total;
+    const media = total === 0 
+        ? 0 
+        : (feedbacks.reduce((s, f) => s + f.satisfacao, 0) / total).toFixed(1);
+    const taxa = participantes === 0 ? 0 : Math.min(100, Math.round((participantes / 500) * 100));
+
+    document.querySelectorAll('.grid.md\\:grid-cols-4 div')[0].querySelector('p.text-3xl').textContent = total;
+    document.querySelectorAll('.grid.md\\:grid-cols-4 div')[1].querySelector('p.text-3xl').textContent = `${media}/5`;
+    document.querySelectorAll('.grid.md\\:grid-cols-4 div')[2].querySelector('p.text-3xl').textContent = participantes;
+    document.querySelectorAll('.grid.md\\:grid-cols-4 div')[3].querySelector('p.text-3xl').textContent = `${taxa}%`;
+}
+
+
+
+        // Enviar feedback
+        function enviarFeedback() {
+
+    const categoria = document.getElementById('categoria').value;
+    const satisfacao = parseInt(document.getElementById('satisfacao').value);
+    const comentario = document.getElementById('comentario').value;
+    const escola = document.getElementById('escola').value;
+
+    if (!categoria || !escola || satisfacao === 0) {
+        alert('Por favor, preencha a categoria, o nome da escola e selecione uma nota de satisfação.');
+        return;
+    }
+
+    const novoFeedback = {
+        data: new Date().toISOString().split('T')[0],
+        categoria: categoria,
+        escola: escola,
+        satisfacao: satisfacao,
+        comentario: comentario || 'Sem comentário'
+    };
+
+    feedbacks.push(novoFeedback);
+
+    atualizarCardsHome();
+    inicializarGraficos();
+    carregarTabelaFeedbacks();
+
+    emailjs.send("service_q8n5mg9", "template_5sign6k", {
+        categoria: categoria,
+        escola: escola,
+        satisfacao: satisfacao,
+        comentario: comentario || 'Sem comentário',
+        data: new Date().toLocaleDateString('pt-BR')
+    })
+    .then(() => {
+        alert('Feedback enviado com sucesso! Obrigado pela participação anônima.');
+    })
+    .catch(() => {
+        alert('Erro ao enviar feedback. Tente novamente mais tarde.');
+    });
+
+    // Limpar formulário
+    document.getElementById('categoria').value = '';
+    document.getElementById('escola').value = '';
+    document.getElementById('satisfacao').value = '0';
+    document.getElementById('comentario').value = '';
+    document.getElementById('rating-display').textContent = '0';
+
+    document.querySelectorAll('.star').forEach(s => {
+        s.classList.add('text-gray-300');
+        s.classList.remove('text-yellow-400');
+    });
+}
+  
+        // Inicializar gráficos
+        let chartCategoria, chartNotas, chartEvolucao;
+        
+
+        
+            // Gráfico de Satisfação por Categoria
+function inicializarGraficos() {
+
+    const medias = [
+        calcularMediaPorCategoria('Ensino'),
+        calcularMediaPorCategoria('Infraestrutura'),
+        calcularMediaPorCategoria('Comunicação'),
+        calcularMediaPorCategoria('Gestão'),
+        calcularMediaPorCategoria('Segurança')
+    ];
+
+    // GRÁFICO POR CATEGORIA
+    if (chartCategoria) chartCategoria.destroy();
+    chartCategoria = new Chart(document.getElementById('chartCategoria'), {
+        type: 'bar',
+        data: {
+            labels: ['Ensino', 'Infraestrutura', 'Comunicação', 'Gestão', 'Segurança'],
+            datasets: [{
+                label: 'Média de Satisfação',
+                data: medias,
+                backgroundColor: '#3b82f6'
+            }]
+        },
+        options: {
+            scales: { y: { beginAtZero: true, max: 5 } }
+        }
+    });
+
+    // DISTRIBUIÇÃO DE NOTAS
+    const notas = [1,2,3,4,5].map(n =>
+        feedbacks.filter(f => f.satisfacao === n).length
+    );
+
+    if (chartNotas) chartNotas.destroy();
+    chartNotas = new Chart(document.getElementById('chartNotas'), {
+        type: 'pie',
+        data: {
+            labels: ['1 estrela','2 estrelas','3 estrelas','4 estrelas','5 estrelas'],
+            datasets: [{ data: notas }]
+        }
+    });
+
+    // EVOLUÇÃO
+    if (chartEvolucao) chartEvolucao.destroy();
+    chartEvolucao = new Chart(document.getElementById('chartEvolucao'), {
+        type: 'line',
+        data: {
+            labels: feedbacks.map((_, i) => `#${i + 1}`),
+            datasets: [{
+                label: 'Satisfação',
+                data: feedbacks.map(f => f.satisfacao),
+                borderColor: '#3b82f6',
+                tension: 0.4
+            }]
+        },
+        options: {
+            scales: { y: { beginAtZero: true, max: 5 } }
+        }
+    });
+}
+
+    </script>
+</body>
+</html>
